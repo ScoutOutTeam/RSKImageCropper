@@ -208,14 +208,22 @@
     // calculate min/max zoomscale
     CGFloat xScale = boundsSize.width  / _imageSize.width;    // the scale needed to perfectly fit the image width-wise
     CGFloat yScale = boundsSize.height / _imageSize.height;   // the scale needed to perfectly fit the image height-wise
+ 
     CGFloat minScale;
+    CGFloat maxScale = MAX(xScale, yScale);
     if (!self.aspectFill) {
         minScale = MIN(xScale, yScale); // use minimum of these to allow the image to become fully visible
     } else {
         minScale = MAX(xScale, yScale); // use maximum of these to allow the image to fill the screen
     }
-    CGFloat maxScale = MAX(xScale, yScale);
     
+    if (boundsSize.width < boundsSize.height) {
+        maxScale = MIN(maxScale, boundsSize.width - 100 );
+        minScale = MIN(maxScale, boundsSize.width - 100 );
+    } else {
+        maxScale = MIN(maxScale, boundsSize.height - 100 );
+        minScale = MIN(maxScale, boundsSize.width - 100 );
+    }
     // Image must fit/fill the screen, even if its size is smaller.
     CGFloat xImageScale = maxScale*_imageSize.width / boundsSize.width;
     CGFloat yImageScale = maxScale*_imageSize.height / boundsSize.width;
